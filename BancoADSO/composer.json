@@ -1,0 +1,21 @@
+{
+    "name": "adso/banco-adso",
+    "description": "Banco ADSO - aplicacion bancaria simulada con POO, Composer, MVC artesanal y PDO sobre MySQL",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        },
+        "files": [
+            "src/ayudantes.php"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}

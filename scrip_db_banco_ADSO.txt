@@ -1,0 +1,90 @@
+
+CREATE DATABASE db_banco_adso charset utf8mb4 collate utf8mb4_general_ci;
+use db_banco_adso;
+
+create table clientes(id  INT AUTO_INCREMENT primary key , 
+nombre varchar(50) not null) engine = innoDB default charset=utf8mb4;
+
+CREATE TABLE cuentas (id INT AUTO_INCREMENT PRIMARY KEY , numero_cuenta VARCHAR(50) NOT NULL UNIQUE ,
+saldo DECIMAL(12,2) NOT NULL DEFAULT 00.0 , clientes_id INT ,
+CONSTRAINT fk_clientes_id FOREIGN KEY (clientes_id)
+REFERENCES clientes(id) ON DELETE RESTRICT 
+) ENGINE=innoDB DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE usuarios(id INT AUTO_INCREMENT PRIMARY KEY,
+cuenta_id INT,
+clave_hash VARCHAR(255) not null,
+CONSTRAINT fk_cuenta_id FOREIGN KEY (cuenta_id)
+REFERENCES cuentas(id) ON DELETE RESTRICT ) ENGINE=innoDB CHARSET = utf8mb4;
+
+CREATE TABLE usuarios(id INT AUTO_INCREMENT PRIMARY KEY, cuenta_id INT ,
+clave_hash VARCHAR(50) not null ,
+CONSTRAINT fk_cuenta_id_clave FOREIGN KEY (cuenta_id)
+references cuentas(id) on delete restrict ) engine = innDB charset=utf8mb4;
+
+CREATE TABLE retiros(id INT AUTO_INCREMENT PRIMARY KEY , 
+cuentas_id INT ,
+valor DECIMAL(12,2) NOT NULL,
+fecha DATETIME DEFAULT current_timestamp,
+constraint fk_cuentas_id_retiros FOREIGN KEY (cuentas_id)
+REFERENCES  cuentas(id) ON  DELETE RESTRICT )ENGINE = innoDB CHARSET = utf8mb4;
+
+CREATE TABLE transferencias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cuenta_origen_id INT NOT NULL,
+    cuenta_destino_id INT NOT NULL,
+    valor DECIMAL(12,2) NOT NULL,
+    fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_trans_origen FOREIGN KEY (cuenta_origen_id) 
+        REFERENCES cuentas(id) 
+        ON DELETE RESTRICT,
+    CONSTRAINT fk_trans_destino FOREIGN KEY (cuenta_destino_id) 
+        REFERENCES cuentas(id) 
+        ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO clientes(nombre) VALUES
+('Jaider gil'),
+('María Rodríguez'),
+('Ana Gómez'),
+('Luis Torres'),	
+('Sofia Martínez');
+
+INSERT INTO cuentas (numero_cuenta, saldo, clientes_id) VALUES
+('1001', 500000.00, 1),
+('1002', 750000.00, 2),
+('1003', 1200000.00, 3),
+('1004', 300000.00, 4),
+('1005', 950000.00, 5);
+
+-- 1001 1234567
+-- 1002 123456
+-- 1003 1234
+-- 1004 12345
+-- 1005 123456789
+
+
+
+
+
+INSERT INTO usuarios(cuenta_id, clave_hash) VALUES
+(1, '$argon2id$v=19$m=65536,t=4,p=1$b3BoMVFmWm5KYWM5a3RkWA$wF77r8WjCrS2nhx4kszWq5tfWBdnE0ejGuiPBbpk0gc' ),
+(2, '$2y$12$Ms7jC7MD8X2uTS7/WTGUvO9THO7n1R5ayAIe2/WSaCSZYmHSGUKNC'),
+(3, '$2y$12$LZ1D2YpZ0Nsd88RjDB7XA.1cHf8n2./eic5sQgXCWHzZU46gtpl9i'),
+(4, '$2y$12$aPb87.PnysFGqeXRdlERO.z50UaUtv6nwuGJ2BP9O3hCJvdFaRzw2'),
+(5, '$2y$12$WK0fb6PD9HkdTvUKy.AwFuHlRhhqGtn0dnTxg.8Y7m454JU9WWAtS');
+
+
+
+USE db_banco_adso;
+
+SELECT * FROM clientes;
+SELECT * FROM cuentas;
+SELECT * FROM RETIROS; 
+SELECT * FROM transferencias;
+SELECT * FROM usuarios;
+
+UPDATE usuarios 
+SET clave_hash = '$2y$12$WK0fb6PD9HkdTvUKy.AwFuHlRhhqGtn0dnTxg.8Y7m454JU9WWAtS'
+WHERE id = 5;
+
